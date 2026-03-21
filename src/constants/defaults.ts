@@ -23,6 +23,7 @@ export const NOTE_TEXT =
 export const createEmptyItem = (idSeed?: number): ProductItem => ({
   id: `${Date.now()}-${idSeed ?? Math.random()}`,
   description: '',
+  hsnCode: '',
   price: 0,
   quantity: 1,
   tax: 0,

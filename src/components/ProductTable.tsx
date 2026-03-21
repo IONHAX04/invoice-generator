@@ -1,5 +1,5 @@
 import type { ProductItem } from '../types/invoice'
-import { formatCurrency, getItemSubtotal, getItemTotal } from '../utils/invoice'
+import { formatCurrency, getEnteredQtyCost, getItemTotal } from '../utils/invoice'
 
 interface ProductTableProps {
   items: ProductItem[]
@@ -38,21 +38,47 @@ export function ProductTable({
               placeholder="Product Description"
               className="w-full rounded border border-slate-300 px-2 py-1.5 text-sm outline-none focus:border-blue-500"
             />
-            <div className="grid grid-cols-3 gap-2">
-              {(['price', 'quantity', 'tax'] as const).map((field) => (
+            <input
+              type="text"
+              value={item.hsnCode}
+              onChange={(e) => onUpdateItem(item.id, 'hsnCode', e.target.value)}
+              placeholder="HSN Code"
+              className="w-full rounded border border-slate-300 px-2 py-1.5 text-sm outline-none focus:border-blue-500"
+            />
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="text-[10px] text-slate-500">Per unit cost</label>
                 <input
-                  key={field}
                   type="number"
                   min={0}
-                  value={item[field]}
-                  onChange={(e) => onUpdateItem(item.id, field, Number(e.target.value))}
-                  placeholder={field.toUpperCase()}
+                  value={item.price}
+                  onChange={(e) => onUpdateItem(item.id, 'price', Number(e.target.value))}
                   className="w-full rounded border border-slate-300 px-2 py-1.5 text-sm outline-none focus:border-blue-500"
                 />
-              ))}
+              </div>
+              <div>
+                <label className="text-[10px] text-slate-500">Qty</label>
+                <input
+                  type="number"
+                  min={0}
+                  value={item.quantity}
+                  onChange={(e) => onUpdateItem(item.id, 'quantity', Number(e.target.value))}
+                  className="w-full rounded border border-slate-300 px-2 py-1.5 text-sm outline-none focus:border-blue-500"
+                />
+              </div>
+            </div>
+            <div>
+              <label className="text-[10px] text-slate-500">Tax %</label>
+              <input
+                type="number"
+                min={0}
+                value={item.tax}
+                onChange={(e) => onUpdateItem(item.id, 'tax', Number(e.target.value))}
+                className="w-full rounded border border-slate-300 px-2 py-1.5 text-sm outline-none focus:border-blue-500"
+              />
             </div>
             <div className="flex items-center justify-between text-xs text-slate-600">
-              <span>Subtotal: {formatCurrency(getItemSubtotal(item))}</span>
+              <span>Entered qty cost: {formatCurrency(getEnteredQtyCost(item))}</span>
               <span>Total: {formatCurrency(getItemTotal(item))}</span>
             </div>
             <button
@@ -73,10 +99,11 @@ export function ProductTable({
             <tr>
               <th className="px-2 py-2">S.No</th>
               <th className="px-2 py-2">Description</th>
-              <th className="px-2 py-2">Price</th>
+              <th className="px-2 py-2">HSN</th>
+              <th className="px-2 py-2">Per unit</th>
               <th className="px-2 py-2">Qty</th>
+              <th className="px-2 py-2">Entered qty cost</th>
               <th className="px-2 py-2">Tax %</th>
-              <th className="px-2 py-2">Subtotal</th>
               <th className="px-2 py-2">Total</th>
               <th className="px-2 py-2"></th>
             </tr>
@@ -90,7 +117,15 @@ export function ProductTable({
                     type="text"
                     value={item.description}
                     onChange={(e) => onUpdateItem(item.id, 'description', e.target.value)}
-                    className="w-full rounded border border-slate-300 px-2 py-1.5 outline-none focus:border-blue-500"
+                    className="w-full min-w-[140px] rounded border border-slate-300 px-2 py-1.5 outline-none focus:border-blue-500"
+                  />
+                </td>
+                <td className="px-2 py-2">
+                  <input
+                    type="text"
+                    value={item.hsnCode}
+                    onChange={(e) => onUpdateItem(item.id, 'hsnCode', e.target.value)}
+                    className="w-20 rounded border border-slate-300 px-2 py-1.5 outline-none focus:border-blue-500"
                   />
                 </td>
                 <td className="px-2 py-2">
@@ -111,6 +146,7 @@ export function ProductTable({
                     className="w-20 rounded border border-slate-300 px-2 py-1.5 outline-none focus:border-blue-500"
                   />
                 </td>
+                <td className="px-2 py-2 text-slate-700">{formatCurrency(getEnteredQtyCost(item))}</td>
                 <td className="px-2 py-2">
                   <input
                     type="number"
@@ -120,7 +156,6 @@ export function ProductTable({
                     className="w-20 rounded border border-slate-300 px-2 py-1.5 outline-none focus:border-blue-500"
                   />
                 </td>
-                <td className="px-2 py-2 text-slate-700">{formatCurrency(getItemSubtotal(item))}</td>
                 <td className="px-2 py-2 text-slate-700">{formatCurrency(getItemTotal(item))}</td>
                 <td className="px-2 py-2">
                   <button

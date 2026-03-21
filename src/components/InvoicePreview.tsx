@@ -1,6 +1,11 @@
 import { NOTE_TEXT } from '../constants/defaults'
 import type { InvoiceData } from '../types/invoice'
-import { calculateSummary, formatCurrency, getItemSubtotal, getItemTaxAmount } from '../utils/invoice'
+import {
+  calculateSummary,
+  formatCurrency,
+  getEnteredQtyCost,
+  getItemTotal,
+} from '../utils/invoice'
 
 interface InvoicePreviewProps {
   data: InvoiceData
@@ -80,10 +85,11 @@ export function InvoicePreview({ data, stampSrc }: InvoicePreviewProps) {
             <tr>
               <th className="border border-slate-200 px-2 py-1 text-left">S.No</th>
               <th className="border border-slate-200 px-2 py-1 text-left">Description</th>
-              <th className="border border-slate-200 px-2 py-1 text-right">Price</th>
+              <th className="border border-slate-200 px-2 py-1 text-right">HSN</th>
+              <th className="border border-slate-200 px-2 py-1 text-right">Per unit</th>
               <th className="border border-slate-200 px-2 py-1 text-right">Qty</th>
+              <th className="border border-slate-200 px-2 py-1 text-right">Entered qty cost</th>
               <th className="border border-slate-200 px-2 py-1 text-right">Tax %</th>
-              <th className="border border-slate-200 px-2 py-1 text-right">Subtotal</th>
               <th className="border border-slate-200 px-2 py-1 text-right">Total</th>
             </tr>
           </thead>
@@ -93,15 +99,18 @@ export function InvoicePreview({ data, stampSrc }: InvoicePreviewProps) {
                 <td className="border border-slate-200 px-2 py-1">{index + 1}</td>
                 <td className="border border-slate-200 px-2 py-1">{item.description || '-'}</td>
                 <td className="border border-slate-200 px-2 py-1 text-right">
+                  {item.hsnCode || '-'}
+                </td>
+                <td className="border border-slate-200 px-2 py-1 text-right">
                   {formatCurrency(item.price)}
                 </td>
                 <td className="border border-slate-200 px-2 py-1 text-right">{item.quantity}</td>
+                <td className="border border-slate-200 px-2 py-1 text-right">
+                  {formatCurrency(getEnteredQtyCost(item))}
+                </td>
                 <td className="border border-slate-200 px-2 py-1 text-right">{item.tax}</td>
                 <td className="border border-slate-200 px-2 py-1 text-right">
-                  {formatCurrency(getItemSubtotal(item))}
-                </td>
-                <td className="border border-slate-200 px-2 py-1 text-right">
-                  {formatCurrency(getItemSubtotal(item) + getItemTaxAmount(item))}
+                  {formatCurrency(getItemTotal(item))}
                 </td>
               </tr>
             ))}

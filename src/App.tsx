@@ -23,6 +23,12 @@ function App() {
       const parsed = JSON.parse(stored) as InvoiceData
       const mergedForm = { ...defaultInvoiceData.form, ...parsed.form }
 
+      const mergedItems = (parsed.items ?? defaultInvoiceData.items).map((item, index) => ({
+        ...createEmptyItem(index),
+        ...item,
+        hsnCode: item.hsnCode ?? '',
+      }))
+
       return {
         ...defaultInvoiceData,
         ...parsed,
@@ -45,6 +51,7 @@ function App() {
             defaultInvoiceData.form.gstNumber,
           ),
         },
+        items: mergedItems,
       }
     } catch {
       return defaultInvoiceData

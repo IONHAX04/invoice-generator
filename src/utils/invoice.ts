@@ -10,6 +10,9 @@ export const formatCurrency = (value: number) =>
 export const getItemSubtotal = (item: ProductItem) =>
   Number(item.price || 0) * Number(item.quantity || 0)
 
+/** Same as subtotal: per unit cost × quantity */
+export const getEnteredQtyCost = (item: ProductItem) => getItemSubtotal(item)
+
 export const getItemTaxAmount = (item: ProductItem) =>
   (getItemSubtotal(item) * Number(item.tax || 0)) / 100
 
